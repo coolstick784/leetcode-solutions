@@ -1,29 +1,31 @@
-class Solution(object):
-    def countAndSay(self, n):
-        """
-        :type n: int
-        :rtype: str
-        """
-        s = "1"
 
-        def getSay(s):
-            print("s", s)
-            fin = ""
-            ctr = 1
-            for idx, c in enumerate(s[1:]):
+class Solution:
+    def countAndSay(self, n: int) -> str:
+        i = 1
+        target = n
+        def returnSay(i, n):
+            cur = ""
+            n_str = str(n)
+            idx = 0
+            cur_d = n_str[0]
+            cur_c = 0
+            while idx < len(n_str):
 
-                if s[idx+1] != s[idx]:
-                    fin += str(ctr)
-                    fin += str(s[idx])
-                    ctr = 1
-                else:
-                    ctr += 1
-            fin += str(ctr)
-            fin += str(s[-1])
-            return fin
-        for _ in range(n-1):
-            s = getSay(s)
-        return s
-                        
+                while idx < len(n_str) and n_str[idx] == cur_d :
+                    cur_c += 1
+                    idx += 1
+                cur += str(cur_c)
+                cur += str(cur_d)
+                cur_c = 0
+                if idx < len(n_str):
+                    cur_d = n_str[idx]
             
-        
+
+            if i == 1:
+                cur = "1"
+            if i == target:
+                return cur
+            print("i", i)
+            print("cur", cur)
+            return returnSay(i+1, int(cur))
+        return returnSay(i, n)
