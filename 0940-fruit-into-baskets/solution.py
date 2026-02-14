@@ -1,31 +1,37 @@
 class Solution:
     def totalFruit(self, fruits: List[int]) -> int:
-        # want to find the most trees in a row with fruits of only 2 types
-        # if it's e.g. AAABBACCBB, have to start from the first C
-        # Want to know:
-        # - When the first fruit started
-        # - The index of the last time the current fruit was (in a row), e.g. BBAAA, A would be index 2
-        # - Where we are now
-        # - The numbers of our two fruits
-        # - If it's a different fruit from the current two, set the left to be the index of the last time the n-1 fruit started their streak
+        fruit_a = None
+        fruit_b = None
+        fruit_a_start = -1
+        fruit_b_start = -1
+        last_fruit_a = -1
+        last_fruit_b = -1
+        max_len = 0
+        recent = None
+        for idx, f in enumerate(fruits):
 
+            
+            if f != fruit_a and f != fruit_b:
+                if recent == fruit_a:
+                    fruit_a_start = last_fruit_b + 1
+                    fruit_b_start = idx
+                    fruit_b = f
 
-        left = 0
-        cur_max = 0
-        older_fruit = -1
-        recent_fruit = -1
-        last_streak_idx = 0
+                else:
+                    fruit_b_start = last_fruit_a + 1
+                    fruit_a_start = idx
+                    fruit_a = f
 
-        for idx, n in enumerate(fruits):
-            if n != older_fruit and n != recent_fruit: # a third fruit. Need to update the last streak, last fruit, and start new
-                older_fruit = recent_fruit
-                left = last_streak_idx
-                
-                last_streak_idx = idx
-            elif n == older_fruit: #add 1 to the total if it's contuining the streak
-                older_fruit = recent_fruit
-                last_streak_idx = idx
-            recent_fruit = n
-            cur_max = max(cur_max, idx-left+1)
-        return cur_max
+            if f == fruit_a:
+                last_fruit_a = idx
+            else:
+                last_fruit_b = idx
+            recent = f
+            cur_len = idx - max(min(fruit_a_start, fruit_b_start), 0) + 1
 
+            max_len = max(max_len, cur_len)
+        
+        
+        
+        return max_len
+        
