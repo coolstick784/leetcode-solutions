@@ -4,36 +4,69 @@
 #         self.val = val
 #         self.next = next
 class Solution:
-    def getNumber(self, cur_list):
-        len_list = len(cur_list)
-        cur_list.reverse()
-        out = 0
-        for idx, n in enumerate(cur_list):
-            out += 10 ** (len_list - idx - 1) * n
-
-        return out
-    def convertToList(self, listnode):
-        out = []
-        
-        cur_node = listnode
-        while cur_node.next is not None:
-            out.append(cur_node.val)
-            cur_node = cur_node.next
-        out.append(cur_node.val)
-        return out
     def addTwoNumbers(self, l1: Optional[ListNode], l2: Optional[ListNode]) -> Optional[ListNode]:
-        converted_l1 = self.convertToList(l1)
-        converted_l2 = self.convertToList(l2)
-        n1 = self.getNumber(converted_l1)
-        n2 = self.getNumber(converted_l2)
-        final_number = n1 + n2
-        out = list(str(final_number))
+        res = []
+        carry = 0
 
-        out = [int(n) for n in out]
         
-        cur_node = ListNode(out[0], None)
-        for idx, n in enumerate(out[1:]):
-            cur_node = ListNode(out[idx+1], cur_node) 
+        cur_l1 = l1
+        cur_l2 = l2
+        while cur_l1 is not None or cur_l2 is not None:
 
-        return cur_node
 
+            if cur_l1 is None:
+                cur_sum = carry + cur_l2.val
+                if cur_sum >= 10:
+                    res.append(cur_sum - 10)
+                    carry = 1
+                    
+                else:
+                    res.append(cur_sum)
+                    carry = 0
+                    
+                cur_l2 = cur_l2.next
+            elif cur_l2 is None:
+                cur_sum = carry + cur_l1.val
+                if cur_sum >= 10:
+                    res.append(cur_sum - 10 )
+                    carry = 1
+                    
+                else:
+                    res.append(cur_sum )
+                    carry = 0
+                    
+                cur_l1 = cur_l1.next
+            else:
+                
+                
+                cur_sum = carry + cur_l1.val + cur_l2.val
+
+                if cur_sum >= 10:
+                    res.append(cur_sum - 10 )
+                    carry = 1
+                    
+                else:
+                    res.append(cur_sum )
+                    carry = 0
+                    
+                cur_l1 = cur_l1.next
+                cur_l2 = cur_l2.next
+        if carry == 1:
+            res.append(1)
+            
+        
+        cur = ListNode(val=res[0])
+        out = cur
+       
+        
+        for idx, val in enumerate(res):
+            
+            if idx < len(res) - 1:
+                cur.next = ListNode(val=res[idx+1])
+            else:
+                cur.next = None
+            cur = cur.next
+                
+            
+        return out
+        
