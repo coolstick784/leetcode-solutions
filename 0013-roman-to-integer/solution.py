@@ -1,26 +1,20 @@
 class Solution:
     def romanToInt(self, s: str) -> int:
-        mapping_dict = {
-            "I":1,
-            "V":5,
-            "X":10,
-            "L":50,
-            "C":100,
-            "D":500,
-            "M":1000
-        }
+        map_dict = {"M":1000, "D":500, "C":100, "L":50, "X":10, "V":5, "I":1}
+        res = 0
         idx = 0
-        out = 0
-        while idx < (len(s)):
-            next_val = mapping_dict[s[idx]]
-            after_next = 0
-            if idx < (len(s) - 1):
-                after_next = mapping_dict[s[idx+1]]
-            if next_val < after_next:
-                out -= next_val
-            else:
-                out += next_val
-            idx += 1
-
-        return out
         
+        while idx < len(s):
+            ch = s[idx]
+            if idx < len(s) - 1:
+                if map_dict[ch] < map_dict[s[idx+1]]:
+                    res += map_dict[s[idx+1]] - map_dict[ch]
+                    idx += 2
+                else:
+                    res += map_dict[ch]
+                    idx += 1
+            else:
+                res += map_dict[ch]
+                idx += 1
+
+        return res
