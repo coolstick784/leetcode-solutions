@@ -1,42 +1,45 @@
 class Solution:
     def maxConsecutiveAnswers(self, answerKey: str, k: int) -> int:
-        left_T = 0
-        left_F = 0
-        cur_max = k
+        # At each index, we want to know if, ending at that index, what the maximum number of Trues and Falses would be if we replaced k of the opposite
+        # We also want to know how many k's we have remaining
+        # We can do one loop for True, one loop for False
+        # So at each index, we want to know if, ending at that index, how many Trues we would have and how many k's we would have left
+        # if we replaced all F's with T up to k times
+        # If we have a new T, add 1 to the T counter and don't change k
+        # If we have a new F, add 1 to k. if k > k, move our left until we remove a F
 
-        F_indices = []
-        T_indices = []
-        num_T = 0
-        num_F = 0
+        num_true = 0
+        left = 0
+        right = 0
+        cur_k = 0
+        while right < len(answerKey):
+            ch = answerKey[right]
+            if ch == "F":
+                cur_k += 1
+                while cur_k > k:
+                    if answerKey[left] == "F":
+                        
+                        cur_k -= 1
+                    left += 1
 
+            num_true = max(num_true, right-left+1)
+            right += 1
 
+        num_false = 0
+        left = 0
+        right = 0
+        cur_k = 0
+        while right < len(answerKey):
+            ch = answerKey[right]
+            if ch == "T":
+                cur_k += 1
+                while cur_k > k:
+                    if answerKey[left] == "T":
+                        
+                        cur_k -= 1
+                    left += 1
 
-
-
- 
-        # For each substring, get the index of the leftmost T with <= k F's in the substring, or the leftmost F with <= k T's in the substring
-
-        for idx, ch in enumerate(answerKey):
-            if ch == 'T':
-                T_indices.append(idx)
-                num_T += 1
-                if num_T >= (k+1):
-                    left_F = T_indices[0] + 1
-                    del T_indices[0]
-            else:
-                F_indices.append(idx)
-                num_F += 1
-                if num_F >= (k+1):
-                    left_T = F_indices[0] + 1
-                    del F_indices[0]
-         
-            cur_max = max([idx-left_T+1, idx-left_F + 1, cur_max])
-
-
-            
-
-        return cur_max
-            
-            
-            
+            num_false = max(num_false, right-left+1)
+            right += 1
+        return max(num_true, num_false)
         
