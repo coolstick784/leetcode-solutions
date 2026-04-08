@@ -1,17 +1,11 @@
+# at each price, we want to set our maximum to our max of (maximum, price - (minimum up to and including this point))
 class Solution:
     def maxProfit(self, prices: List[int]) -> int:
-        # Start at the left, go to the right
-        # If right > left, max_difference = max(max_difference, right - left)
-        # If right < left, left = right
-        max_difference = 0
-        left = 0
-        right = 0
-        while right < len(prices):
-
-            if prices[right] > prices[left]:
-
-                max_difference = max(max_difference, prices[right] - prices[left])
-            else:
-                left = right
-            right += 1
-        return max_difference
+        res = 0
+        cur_min = inf
+        for idx, p in enumerate(prices):
+            if p < cur_min:
+                cur_min = p
+            res = max(p - cur_min, res)
+        return res
+        
