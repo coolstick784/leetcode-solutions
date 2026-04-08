@@ -4,31 +4,33 @@
 #         self.val = val
 #         self.left = left
 #         self.right = right
+
+# go through each level, left to right
+# we want to know what each index "should be"
+# for example, the left -> left -> left should be 0
+
+# 0 -> [0, 1]
+# 1 -> [2, 3]
+# 3 -> [6, 7]
 class Solution:
     def widthOfBinaryTree(self, root: Optional[TreeNode]) -> int:
-        # We need to calculate the overall index of each node that exists, as well as save each node to the levels
-        # 0.left = 1, 0.right = 2, 1.left = 3, 1.right = 4, 2.left = 5, 2.right = 6
-        # start is 2^(n-1) -1, end = 2^n - 2
-        # diff from curr to the curr start * 2 + next level start + 1 if right
-        cur_level = deque([(root, 0)])
-        level = 0
-        max_dist = 0
-        while cur_level:
- 
-            max_dist = max(max_dist, cur_level[-1][1] - cur_level[0][1] + 1)
-            cur_start = 2**level-1
-            next_start = 2**(level+1)-1
-            for _ in range(len(cur_level)):
-                cur_node, cur_idx = cur_level.popleft()
-                
-                calc_next = next_start + (cur_idx - cur_start) * 2 
-                if cur_node.left is not None:
-                    cur_level.append((cur_node.left, calc_next))
-                if cur_node.right is not None:
-                    cur_level.append((cur_node.right, calc_next+1))
 
-                
-            level += 1
+        cur_level = [(0, root)]
+        res = 1
+        next_level = []
+        while cur_level:
+            res = max(res, cur_level[-1][0] - cur_level[0][0] + 1)
+            for idx, node in cur_level:
+                if node.left is not None:
+                    next_level.append((idx*2, node.left))
+                if node.right is not None:
+                    next_level.append((idx*2+1, node.right))
+   
+            
+            cur_level = next_level.copy()
+            next_level = []
+        return res
         
+
+
         
-        return max_dist
