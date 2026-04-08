@@ -1,25 +1,17 @@
+# we want 2 lists, the multiplication of everything to the left of it and the multiplication of everyuthing to the right
+# mutltiply those 2 to get our answer
 class Solution:
     def productExceptSelf(self, nums: List[int]) -> List[int]:
-        left = []
-        left.append(1)
         cur = 1
-        for n in nums:
-            cur *= n
-            left.append(cur)
-
-        right = []
-        right.append(1) 
-        cur = 1
-        for n in nums[::-1]:
-            cur *= n
-            right.append(cur)
-        right.reverse()
-        left = left[:-1]
-        right = right[1:]
-        print("left", left)
-        print("right", right)
         res = []
-        for idx, l in enumerate(left):
-            res.append(l * right[idx])
-        return res
+        for idx, n in enumerate(nums):
             
+            res.append(cur)
+            cur *= n
+        cur = 1
+        for idx in range(len(nums)-1, -1, -1):
+            res[idx] = cur * res[idx]
+            cur *= nums[idx]
+
+        return res
+        
