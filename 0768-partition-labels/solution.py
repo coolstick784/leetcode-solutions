@@ -1,50 +1,26 @@
+# we want the last index of each letter
+# so e.g. we start at a, we want the last index of a
+# then, we check each letter between the first and last index (inclusive), and our last index is then the max(last_index, last index of cur letter)
+# then, once the cur index is the last index, appned last - first + 1index to the result, and move first to last_index + 1
+# while first index < len(s)
+
 class Solution:
     def partitionLabels(self, s: str) -> List[int]:
-        # Read in the letters one by one
-        # There are at most 26 groups -- thus, we can initialize 26 groups
-        # Each group is associated with a group of letters, a start index, and an end index
-        # For each letter we go through, we loop through each group. 
-        # If the letter is found, all groups past that group # are destroyed and that group's letters are concatenated with all the destroyed group numbers
-        # The end index of that group is now the latest index
-        groups = {}
-        max_group = 0
-        for i in range(1, 27):
-            groups[i] = [set(), 0, 0]
+        first_idx = 0
+        last_idx = -1
+        last_idxs = {}
+        cur_idx = 0
+        res = []
         for idx, ch in enumerate(s):
-            n = 1
-            while n < 27:
-
-                if ch in groups[n][0]:
-                    print(ch)
-                    print(idx)
-                    groups[n][2] = idx
-                    for i in range(n+1, 27):
-                        
-                        groups[n][0] = groups[n][0].union(groups[i][0])
-                        groups[i][1] = 0
-                        groups[i][2] = 0
-                        groups[n][2] = max(groups[n][2], groups[i][2])
-                        groups[i][0] = set()
-
-                    n = 27
-                elif groups[n][0] == set():
-                    groups[n][0].add(ch)
-                    groups[n][1] = idx
-                    groups[n][2] = idx
-                    n = 28
-
-                n += 1
-        all_s = []
-        print(groups)
-        for i in range(1, 27):
-            if groups[i][0] != set():
-                all_s.append(groups[i][2]-groups[i][1] +1)
-        return all_s
-
-
-                
+            last_idxs[ch] = idx
+        while first_idx < len(s):
+            cur_ch = s[cur_idx]
+            last_idx = max(last_idx, last_idxs[cur_ch])
+            if cur_idx == last_idx:
+                res.append(last_idx-first_idx+1)
+                first_idx = last_idx + 1
+                cur_idx = first_idx
+            else:
+                cur_idx += 1
+        return res
             
-
-
-
-
