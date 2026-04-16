@@ -1,23 +1,27 @@
+# if (the second rectangle's max x is between the x limits of the first ,or the second rectangle min x is between the x limits of the first
+# or the first rectangle's...)
+# same with y
+
 class Solution:
     def isRectangleOverlap(self, rec1: List[int], rec2: List[int]) -> bool:
-        # they overlap if any of the following apply:
-        # 1. x start from rec2 is between x in rec1 AND 3 or 4
-        # 2. x end from rec2 is between x in rec1 AND 3 or 4
-        # 3. y start from rec2 is between y in rec1 AND 1 or 2
-        # 4. y end from rec2 is between y in rec1 AND 1 or 2
-        if rec1 == rec2:
-            return True
-
-        x_cond_1 = rec2[0] > rec1[0] and rec2[0] < rec1[2]
-        x_cond_2 = rec2[2] > rec1[0] and rec2[2] < rec1[2]
-        y_cond_1 = rec2[1] > rec1[1] and rec2[1] < rec1[3]
-        y_cond_2 = rec2[3] > rec1[1] and rec2[3] < rec1[3]
-
-        x_cond_3 = rec1[0] > rec2[0] and rec1[0] < rec2[2]
-        x_cond_4 = rec1[2] > rec2[0] and rec1[2] < rec2[2]
-        y_cond_3 = rec1[1] > rec2[1] and rec1[1] < rec2[3]
-        y_cond_4 = rec1[3] > rec2[1] and rec1[3] < rec2[3]
-        if (x_cond_1 or x_cond_2 or x_cond_3 or x_cond_4) and (y_cond_1 or y_cond_2 or y_cond_3 or y_cond_4):
+        first_min_x = rec1[0]
+        first_max_x = rec1[2]
+        first_min_y = rec1[1]
+        first_max_y = rec1[3]
+        second_min_x = rec2[0]
+        second_max_x = rec2[2]
+        second_min_y = rec2[1]
+        second_max_y = rec2[3]
+        if ((first_min_x < second_max_x and first_min_x > second_min_x) or \
+        (first_max_x < second_max_x and first_max_x > second_min_x) or \
+        (second_min_x < first_max_x and second_min_x > first_min_x) or \
+        (second_max_x < first_max_x and second_max_x > first_min_x) or \
+           (first_max_x == second_max_x and first_min_x == second_min_x)) and \
+        ((first_min_y < second_max_y and first_min_y > second_min_y) or\
+        (first_max_y < second_max_y and first_max_y > second_min_y) or\
+        (second_min_y < first_max_y and second_min_y > first_min_y) or\
+        (second_max_y < first_max_y and second_max_y > first_min_y) or \
+           (first_max_y == second_max_y and first_min_y == second_min_y)) :
             return True
         return False
         
