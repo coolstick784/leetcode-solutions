@@ -1,19 +1,25 @@
-class Solution(object):
-    def combinationSum(self, candidates, target):
-        """
-        :type candidates: List[int]
-        :type target: int
-        :rtype: List[List[int]]
-        """
-        def getSums(cur_lst, candidates, target):
-            if target == 0:
-                self.total.append(cur_lst)
-                return
-            for i, c in enumerate(candidates):
-                if c <= target:
-                    getSums(cur_lst + [c], candidates[i:], target - c)
+from functools import lru_cache
 
-        self.total = []
-        getSums([], candidates, target)
-        return self.total
+class Solution:
+    def combinationSum(self, candidates: List[int], target: int) -> List[List[int]]:
+        candidates = list(set(candidates))
+        candidates.sort()
 
+        @lru_cache(None)
+        def solve(t, start):
+            out = []
+
+            for i in range(start, len(candidates)):
+                c = candidates[i]
+
+                if c == t:
+                    out.append([c])
+                elif c < t:
+                    for sol in solve(t - c, i):
+                        out.append([c] + sol)
+                else:
+                    break
+
+            return out
+
+        return solve(target, 0)
