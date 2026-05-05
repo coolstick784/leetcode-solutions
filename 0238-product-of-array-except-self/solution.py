@@ -1,17 +1,19 @@
-# we want 2 lists, the multiplication of everything to the left of it and the multiplication of everyuthing to the right
-# mutltiply those 2 to get our answer
+# before = [1, 1, 2, 6, 24]
+# after = [1, 4, 12, 24, 24] -> [24, 12, 4, 1]
+# [23, 12, 8, 6]
+
 class Solution:
     def productExceptSelf(self, nums: List[int]) -> List[int]:
-        cur = 1
+        before = [1]
+        for n in nums:
+            before.append(before[-1] * n)
+        after = [1]
+        for n in nums[::-1]:
+            after.append(after[-1] * n)
+        after.reverse()
+        after = after[1:]
         res = []
         for idx, n in enumerate(nums):
+            res.append(before[idx] * after[idx])
+        return res 
             
-            res.append(cur)
-            cur *= n
-        cur = 1
-        for idx in range(len(nums)-1, -1, -1):
-            res[idx] = cur * res[idx]
-            cur *= nums[idx]
-
-        return res
-        
