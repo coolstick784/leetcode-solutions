@@ -8,12 +8,10 @@
 # add the left and the right to the stack and switch them
 class Solution:
     def invertTree(self, root: Optional[TreeNode]) -> Optional[TreeNode]:
-        stack = [root]
-        while stack:
-            cur = stack.pop()
-            if cur is None:
-                continue
-            cur.left, cur.right = cur.right, cur.left
-            stack.append(cur.left)
-            stack.append(cur.right)
+        if root is None:
+            return None
+        new_left = self.invertTree(root.right)
+        new_right = self.invertTree(root.left)
+        root.left = new_left
+        root.right = new_right
         return root
