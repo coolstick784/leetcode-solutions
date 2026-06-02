@@ -5,7 +5,7 @@ class Solution:
                 return (0, 1)
             a, b = helper(n//2)
             c = a * (b*2-a)
-            d = a*a+b*b
+            d = (a*a + b * b)
             if n % 2 == 0:
                 return (c, d)
             return (d, c+d)
