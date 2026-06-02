@@ -4,16 +4,13 @@
 class Solution:
     def maxSubArray(self, nums: List[int]) -> int:
         res = 0
-        run_sum = 0
-        max_val = max(nums)
-        if max_val < 0:
-            return max_val
-        for idx, n in enumerate(nums):
-            run_sum += n
-            if run_sum < 0:
-                run_sum = 0
-                
-            else:
-                res = max(res, run_sum)
-
+        cur = 0
+        mx = max(nums)
+        if mx <= 0:
+            return mx
+        for n in nums:
+            cur += n
+            if cur <= 0:
+                cur = 0
+            res = max(res, cur)
         return res
