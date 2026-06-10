@@ -1,51 +1,34 @@
+from collections import deque
 class Solution:
     def orangesRotting(self, grid: List[List[int]]) -> int:
-        # start with each rotten orange
-        # then, for each rotten orange, we want a new list of rotten oranges that were not rotten previously
-        # for those oranges, they are set with minute 1
-        # then for those oranges, that's minute two, and we keep going until there are no more fresh oranges to rot
+        q = deque()
         
-        rotten = set()
-        rot_from = set()
-        new_rot_from = set()
-        fresh = set()
-        
+        num_fresh = 0
         for r, row in enumerate(grid):
             for c, el in enumerate(row):
                 if el == 2:
-                    rotten.add((r, c))
-                if el == 1:
-                    fresh.add((r, c))
-                    
-        if not rotten and not fresh:
-            return 0
-     
-                    
-        def rot(row, col):
-            if row < 0 or col < 0 or row >= len(grid) or col >= len(grid[0]) or (row, col) in rotten or grid[row][col] != 1:
-                return
-            grid[row][col] == 2
-            new_rot_from.add((row, col))
-            
-            
-        rot_from = rotten.copy()
-        
-        minutes = -1
-        while rot_from:
-      
-            for r, c in rot_from:
-                rot(r-1, c)
-                rot(r+1, c)
-                rot(r, c-1)
-                rot(r, c+1)
-            rotten = rotten.union(new_rot_from)
-            rot_from = new_rot_from.copy()
-            new_rot_from = set()
+                    q.append((r,c, 0))
+                elif el == 1:
+                    num_fresh += 1
+        def explore(cr, cc, cur):
+            nonlocal num_fresh
+            if cr < 0 or cc < 0 or cr >= len(grid) or cc >= len(grid[0]) or grid[cr][cc] != 1:
+                return 
+            grid[cr][cc] = 2
+            q.append((cr, cc, cur+1))
+            num_fresh -= 1
+        t = 0
+        while q:
            
-            minutes += 1
-       
-        for r, row in enumerate(grid):
-            for c, el in enumerate(row):
-                if el == 1 and (r, c) not in rotten:
-                    return -1
-        return minutes
+            r, c, t= q.popleft()
+          
+            explore(r-1, c, t)
+            explore(r+1, c, t)
+            explore(r, c-1, t)
+            explore(r, c+1, t)
+
+
+
+        if num_fresh:
+            return -1
+        return t
