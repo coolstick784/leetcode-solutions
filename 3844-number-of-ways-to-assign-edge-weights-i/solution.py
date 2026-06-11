@@ -1,23 +1,24 @@
 class Solution:
     def assignEdgeWeights(self, edges: List[List[int]]) -> int:
-        map_dict = {}
-        for idx, edge in enumerate(edges):
-            start, end = edge
-            map_dict.setdefault(start, []).append(end)
-            map_dict.setdefault(end, []).append(start)
-        explored = set()
+        
+        conns = {}
+        for start, end in edges:
+            conns.setdefault(start, set()).add(end)
+            conns.setdefault(end, set()).add(start)
+        def explore(n, parent=None):
+            res = 0
+            for end in conns.get(n, set()):
+                if end == parent:
+                    continue
 
-        def findMax(n):
-            out = [0]
-            explored.add(n)
-            for end in map_dict[n]:
-                if end not in explored:
-                    out.append(1+findMax(end))
-            return max(out)
+                res = max(res, 1 + explore(end, n))
+            return res
+
+        maxDepth = explore(1)
+
+            
 
 
-        max_depth = findMax(1)
 
-        def solve(n, isEven):
-            return 2**(n-1)
-        return solve(max_depth, False) % (10**9+7)
+
+        return 2**(maxDepth-1) % (10**9+7)
