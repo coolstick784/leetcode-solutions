@@ -1,28 +1,24 @@
-# a list of groups, and a list that we've explored
-# create a dict/hashmap where we get the number of edges that are connected to that edge
-# if we've already explored it, skip
-# after we perform dfs and get the number of edges in that grouping, obviously add those edges to explored and keep going until there are no more edges to explore in our dfs
-# then, get our current number in our group and multiply that by n - len(explored)
-
 class Solution:
     def countPairs(self, n: int, edges: List[List[int]]) -> int:
-        explored = set()
-        starts = {}
+        union = [i for i in range(n)]
+        conns = {}
+        def trace(cur):
+            if union[cur] == cur:
+                return cur
+            val = trace(union[cur])
+            union[cur] = val
+            return val
+        def join(start, end):
+            union[trace(union[end])] = trace(union[start])
+            return 
         for start, end in edges:
-            starts.setdefault(start, []).append(end)
-            starts.setdefault(end, []).append(start)
-        
-        def dfs(cur):
-            if cur in explored:
-                return 0
-            explored.add(cur)
-            out = 1
-            for end in starts.get(cur, []):
-                out += dfs(end)
-            return out 
+            join(start, end)
 
+        ctr = Counter([trace(i) for i in range(n)])
         res = 0
-        for edge in range(n):
-            res += dfs(edge)  * (n - len(explored))
-        return res
         
+        for i in ctr:
+            res += ctr[i] * (n - ctr[i])
+            n -= ctr[i]
+
+        return res
