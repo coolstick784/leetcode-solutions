@@ -1,19 +1,14 @@
-squares = []
-for n in range(1, 101):
-    squares.append(n*n)
-
+squares = [n**2 for n in range(1, 10**2+1)]
 @lru_cache(None)
-def solve(num):
-    if num == 0:
+def solve(val):
+    if val == 0:
         return 0
-    if num < 0:
-        return float('inf')
-    res = float('inf')
-    for i in squares:
-        if i > num:
+    out = float('inf')
+    for sq in squares:
+        if sq > val:
             break
-        res = min(res, 1+solve(num-i))
-    return res
+        out = min(out, 1 + solve(val - sq))
+    return out
 
 
 class Solution:
