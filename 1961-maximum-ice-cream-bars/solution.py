@@ -1,17 +1,17 @@
+from collections import Counter
 class Solution:
     def maxIceCream(self, costs: List[int], coins: int) -> int:
-        
-        max_val = max(costs)
-        counts = [0 for _ in range(max_val+1)]
-        for c in costs:
-            counts[c] += 1
-        cur = 0
+        mx = max(costs)
         res = 0
-        for idx, _ in enumerate(counts):
-            while counts[idx] > 0 and cur + idx <= coins:
-
-                cur += idx
-                res += 1
-                counts[idx] -= 1
+        ctr = Counter(costs)
+        for n in range(1, mx+1):
+            ct = ctr.get(n, 0) 
+            cost = n * ct
+            if cost < coins:
+                coins -= cost
+                res += ct
+            else:
+                res += coins // n
+                coins -= (n * coins // n)
+            
         return res
-        
