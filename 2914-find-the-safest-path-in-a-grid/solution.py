@@ -1,50 +1,44 @@
-# first, score all cells with their closeness score
-# then, use sdkistra's algo to ask the question: for each cell we can go to, what's our score if our path ends at that cell?
-# then, just keep going to the lowest score
-# once we reach the end, return our score
-
+import heapq
 class Solution:
     def maximumSafenessFactor(self, grid: List[List[int]]) -> int:
+        @lru_cache(None)
+        def closest(r, c):
+            
+            if r < 0 or c < 0 or r >= len(grid) or c >= len(grid[0]):
+                return float('inf')
+            if grid[r][c] == 1:
+                return 0
 
-        scores = [[None for _ in range(len(grid[0]))] for _ in range(len(grid))]
-        dq = deque([])
 
+            return min(closest(r+1, c)+1, closest(r, c+1)+1)
+
+
+        close = {}
         for r, row in enumerate(grid):
             for c, el in enumerate(row):
-                if el == 1:
-                    scores[r][c] = 0
-                    dq.append((r, c))
+                close[(r, c)] = closest(r, c)
+                close[(r,c)]= min(close[(r,c)], close.get((r-1,c), float('inf'))+1, close.get((r, c-1), float('inf'))+1)
+        
 
-        while dq:
-            r, c = dq.popleft()
-
-            for nr, nc in ((r+1, c), (r-1, c), (r, c+1), (r, c-1)):
-                if 0 <= nr < len(grid) and 0 <= nc < len(grid[0]) and scores[nr][nc] is None:
-                    scores[nr][nc] = scores[r][c] + 1
-                    dq.append((nr, nc))
-        def push_to_heap(r, c, cur_score):
-            if r < 0 or r >= len(grid) or c < 0 or c >= len(grid[0]):
+        best = {} # (r, c) -> safe
+        def explore(r, c, safe):
+            if r < 0 or c < 0 or r >= len(grid) or c >= len(grid[0]):
                 return
-            
-            new_score = min(cur_score, scores[r][c])
-            if new_score > best[r][c]:
-                heapq.heappush(heap, (-new_score, r, c))
-
-        heap = [(-1*scores[0][0], 0 , 0)]
-        best = [[-1*float("inf") for _ in range(len(grid[0]))] for _ in range(len(grid))]
+            safe = min(safe, close[(r, c)])
+            if safe <= best.get((r, c), -float('inf')):
+                return 
+            best[(r, c)] = safe
+            heapq.heappush(heap, (-safe, r, c))
+        heap = [(-close[(0, 0)], 0, 0)]
         while heap:
-            score, r, c = heapq.heappop(heap)
-            score = -1 * score
+            s, cr, cc = heapq.heappop(heap)
             
-            if score <= best[r][c]:
-                continue
-            if r == len(grid) -1 and c == len(grid[0]) - 1:
-                return score
-            best[r][c] = score
-            push_to_heap(r+1, c, score)
-            push_to_heap(r-1, c, score)
-            push_to_heap(r, c+1, score)
-            push_to_heap(r, c-1, score)
-
-
+            s = -s
+         
+            if cr == len(grid) - 1 and cc == len(grid[0]) - 1:
+                return s
+            explore(cr+1, cc, s)
+            explore(cr-1, cc, s)
+            explore(cr, cc+1, s)
+            explore(cr, cc-1, s)
 
