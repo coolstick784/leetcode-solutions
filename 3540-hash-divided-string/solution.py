@@ -1,16 +1,12 @@
 class Solution:
     def stringHash(self, s: str, k: int) -> str:
-        letters = [chr(ord('a') + n) for n in range(26)]
-        idxs = {}
-        for idx, ch in enumerate(letters):
-            idxs[ch] = idx
         res = []
+        su = 0
         for idx, ch in enumerate(s):
-            if idx % k == 0:
-                if idx != 0:
-                    res.append(letters[cur % 26])
-                cur = 0
-
-            cur += idxs[ch]
-        res.append(letters[cur % 26])
+            su += ord(ch) - ord('a')
+            if (idx+1) % k == 0:
+                r = su % 26
+                res.append(chr(ord('a') + r))
+                su = 0
         return "".join(res)
+
