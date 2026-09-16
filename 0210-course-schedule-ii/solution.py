@@ -1,22 +1,30 @@
+from collections import deque
 class Solution:
-    def findOrder(self, numCourses: int, prerequisites: List[List[int]]) -> List[int]:
-        pres = {}
-        ends = {}
-        for end, start in prerequisites:
-            pres.setdefault(start, set()).add(end)
-            ends.setdefault(end, set()).add(start)
-        can_do = deque([n for n in range(numCourses) if n not in ends])
+    def findOrder(self, numCourses: int, prerequisites: list[list[int]]) -> list[int]:
+        explored = set()
+        add = deque()
         res = []
-        while can_do:
-            course = can_do.popleft()
-            res.append(course)
-            for end in pres.get(course, []):
-                ends[end].remove(course)
-                if not ends[end]:
-                    can_do.append(end)
-
-
-
-        if len(res) == numCourses:
-            return res
-        return []
+        need = {}
+        is_needed = {}
+        total = set()
+        for c, b in prerequisites:
+            need.setdefault(c, set()).add(b)
+            is_needed.setdefault(b, set()).add(c)
+            total.add(c)
+            total.add(b)
+        for p in range(numCourses):
+            if len(need.get(p, set())) == 0:
+                add.append(p)
+        while add:
+            c = add.popleft()
+            explored.add(c)
+            for c2 in is_needed.get(c, set()):
+                if c2 in explored:
+                    continue
+                need[c2].remove(c)
+                if len(need[c2]) == 0:
+                    add.append(c2)
+            res.append(c)
+        if len(res) != numCourses:
+            return []
+        return res
